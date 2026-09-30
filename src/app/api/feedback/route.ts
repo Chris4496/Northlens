@@ -1,3 +1,4 @@
+import { PRIORITIES } from "@/lib/i18n";
 import { randomUUID } from "node:crypto";
 import { classifyFeedback } from "@/lib/server/classify";
 import { redactPII } from "@/lib/server/pii";
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
   const raw = typeof body?.text === "string" ? body.text.trim().slice(0, 2000) : "";
   const persona: PersonaId = PERSONAS.includes(body?.persona) ? body.persona : "caregiver";
   const priorities: string[] = Array.isArray(body?.priorities)
-    ? body.priorities.filter((p: unknown) => typeof p === "string").slice(0, 10)
+    ? [...new Set<string>(body.priorities.filter((p: unknown) => typeof p === "string" && PRIORITIES.some((option) => option.id === p)))].slice(0, 10)
     : [];
   if (!raw && priorities.length === 0) {
     return Response.json({ error: "Feedback text or priorities required" }, { status: 400 });

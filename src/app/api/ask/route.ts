@@ -6,7 +6,7 @@ const CONCERNS = ["transport", "community", "accessibility"];
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as Partial<AskRequest> | null;
-  const question = body?.question?.trim().slice(0, 600);
+  const question = typeof body?.question === "string" ? body.question.trim().slice(0, 600) : "";
   if (!question || !PERSONAS.includes(body!.persona!) || !CONCERNS.includes(body!.concern!)) {
     return Response.json({ error: "question, persona and concern are required" }, { status: 400 });
   }

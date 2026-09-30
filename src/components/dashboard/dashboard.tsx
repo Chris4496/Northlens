@@ -10,6 +10,7 @@ import { DASHBOARD_TOUR } from "@/lib/tours";
 import { useLang } from "../lang";
 import { Tour } from "../tour";
 import { Briefing } from "./briefing";
+import { ExportBar } from "./export-bar";
 import { Heatmap } from "./heatmap";
 import { PriorityTable } from "./priority-table";
 import { ReviewQueue } from "./review-queue";
@@ -37,6 +38,7 @@ export function Dashboard() {
   const zh = lang === "zh";
   const [data, setData] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reviewError, setReviewError] = useState<string | null>(null);
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [selected, setSelected] = useState<FeedbackTheme | null>(null);
   const [mapScope, setMapScope] = useState<"all" | "theme">("all");
@@ -73,12 +75,19 @@ export function Dashboard() {
   );
 
   async function review(id: string, theme?: FeedbackTheme) {
-    await fetch(`/api/feedback/${id}`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(theme ? { theme } : {}),
-    });
-    load();
+    setReviewError(null);
+    try {
+      const res = await fetch(`/api/feedback/${id}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(theme ? { theme } : {}),
+      });
+      if (!res.ok) throw new Error("Review failed");
+      const updated: Feedback = await res.json();
+      setData((current) => current ? { ...current, rows: current.rows.map((row) => row.id === id ? updated : row) } : current);
+    } catch {
+      setReviewError(zh ? "未能儲存覆核，請重試。" : "Could not save the review. Please try again.");
+    }
   }
 
   const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setFilters((f) => ({ ...f, [k]: v }));
@@ -106,7 +115,7 @@ export function Dashboard() {
         </p>
       </header>
 
-      <div data-tour="filters" className="sticky top-[57px] z-40 -mx-5 mt-6 border-y border-ink bg-paper/95 px-5 py-3 backdrop-blur md:-mx-8 md:px-8">
+      <div data-tour="filters" className="z-40 -mx-5 mt-6 border-y border-ink bg-paper/95 px-5 py-3 backdrop-blur md:sticky md:top-(--header-h) md:-mx-8 md:px-8">
         <div className="flex flex-wrap items-center gap-3">
           <Segmented
             label="Period"
@@ -118,32 +127,34 @@ export function Dashboard() {
               ["14", zh ? "14 日" : "14 days"],
             ]}
           />
-          <select
-            value={filters.stakeholder}
-            onChange={(e) => set("stakeholder", e.target.value as Filters["stakeholder"])}
-            className="border border-ink bg-card px-2 py-1.5 text-xs"
-            aria-label={t("stakeholder")}
-          >
-            <option value="all">{zh ? "所有群組" : "All groups"}</option>
-            {stakeholders.map((s) => (
-              <option key={s} value={s}>
-                {pick(STAKEHOLDER_LABEL[s])}
-              </option>
-            ))}
-          </select>
-          <select
-            value={filters.zone}
-            onChange={(e) => set("zone", e.target.value as Filters["zone"])}
-            className="border border-ink bg-card px-2 py-1.5 text-xs"
-            aria-label={t("zone")}
-          >
-            <option value="all">{zh ? "所有地點" : "All areas"}</option>
-            {zones.map((z) => (
-              <option key={z} value={z}>
-                {pick(ZONES[z])}
-              </option>
-            ))}
-          </select>
+          <div className="grid w-full grid-cols-2 gap-2 sm:contents">
+            <select
+              value={filters.stakeholder}
+              onChange={(e) => set("stakeholder", e.target.value as Filters["stakeholder"])}
+              className="min-w-0 border border-ink bg-card px-2 py-1.5 text-xs"
+              aria-label={t("stakeholder")}
+            >
+              <option value="all">{zh ? "所有群組" : "All groups"}</option>
+              {stakeholders.map((s) => (
+                <option key={s} value={s}>
+                  {pick(STAKEHOLDER_LABEL[s])}
+                </option>
+              ))}
+            </select>
+            <select
+              value={filters.zone}
+              onChange={(e) => set("zone", e.target.value as Filters["zone"])}
+              className="min-w-0 border border-ink bg-card px-2 py-1.5 text-xs"
+              aria-label={t("zone")}
+            >
+              <option value="all">{zh ? "所有地點" : "All areas"}</option>
+              {zones.map((z) => (
+                <option key={z} value={z}>
+                  {pick(ZONES[z])}
+                </option>
+              ))}
+            </select>
+          </div>
           <Segmented
             label="Data"
             value={filters.source}
@@ -167,6 +178,8 @@ export function Dashboard() {
           </span>
         </div>
       </div>
+
+      <ExportBar filters={filters} confirmed={rows.filter((r) => r.reviewed).length} total={rows.length} />
 
       {rows.length === 0 ? (
         <p className="mt-10 border border-dashed border-ink p-10 text-center text-sm text-muted">
@@ -279,6 +292,7 @@ export function Dashboard() {
       )}
 
       <div data-tour="review" className="mt-8">
+        {reviewError && <p role="alert" className="mb-3 text-sm text-vermilion">{reviewError}</p>}
         <ReviewQueue rows={rows} onReview={review} />
       </div>
       <p className="mt-6 text-xs text-muted">{t("methodology")}</p>

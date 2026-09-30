@@ -103,6 +103,19 @@ export const T = {
   stakeholder: { en: "Stakeholder", zh: "持份者" },
   concern: { en: "Concern", zh: "關注" },
   suggestedIssue: { en: "Suggested issue", zh: "建議議題" },
+  exportConsultation: { en: "Consultation report", zh: "諮詢報告" },
+  exportFeedback: { en: "Feedback report", zh: "意見報告" },
+  exportNote: {
+    en: "Exports include only responses a person has confirmed in the review queue. Unreviewed AI classifications are excluded.",
+    zh: "匯出只包括已在覆核隊列中由人確認的回應，未覆核的 AI 分類不會列入。",
+  },
+  exportPrint: { en: "Print / save as PDF", zh: "列印／另存 PDF" },
+  exportCsv: { en: "Download CSV", zh: "下載 CSV" },
+  exportBack: { en: "Back to dashboard", zh: "返回儀表板" },
+  exportEmpty: {
+    en: "No confirmed responses match these filters. Confirm items in the review queue, then export.",
+    zh: "沒有符合篩選條件的已確認回應。請先在覆核隊列中確認，再匯出。",
+  },
   seedFeedback: { en: "Use the demo feedback", zh: "使用示範意見" },
   status: { en: "Status", zh: "狀態" },
 } satisfies Dict;

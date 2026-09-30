@@ -43,7 +43,17 @@ const UI = {
 
 const PAD = 8;
 const CARD_W = 380;
-const TOP_CHROME = 130;
+
+function headerH() {
+  return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 57;
+}
+
+/** Height covered by sticky page chrome: the header plus the dashboard filter bar, if present. */
+function topChrome() {
+  const bar = document.querySelector<HTMLElement>('[data-tour="filters"]');
+  const sticky = bar && getComputedStyle(bar).position === "sticky";
+  return headerH() + (sticky ? bar.offsetHeight : 0) + 16;
+}
 
 interface Rect {
   top: number;
@@ -92,7 +102,8 @@ export function Tour({ id, steps }: { id: string; steps: TourStep[] }) {
     if (el) {
       const r = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      const offset = r.height > vh - TOP_CHROME - 220 ? TOP_CHROME : Math.max(TOP_CHROME, (vh - r.height) / 2 - 60);
+      const chrome = el.dataset.tour === "filters" ? headerH() + 16 : topChrome();
+      const offset = r.height > vh - chrome - 220 ? chrome : Math.max(chrome, (vh - r.height) / 2 - 60);
       window.scrollTo({ top: r.top + window.scrollY - offset, behavior: "smooth" });
     }
     let raf = 0;
@@ -136,9 +147,11 @@ export function Tour({ id, steps }: { id: string; steps: TourStep[] }) {
   const vh = typeof window === "undefined" ? 800 : window.innerHeight;
   const width = Math.min(CARD_W, vw - 32);
 
+  const hh = typeof window === "undefined" ? 57 : headerH();
+
   // Spotlight clamped to the visible area below the sticky header.
   const spot = rect && {
-    top: Math.max(rect.top - PAD, 64),
+    top: Math.max(rect.top - PAD, hh + 7),
     left: Math.max(rect.left - PAD, 8),
     right: Math.min(rect.left + rect.width + PAD, vw - 8),
     bottom: Math.min(rect.top + rect.height + PAD, vh - 8),
@@ -150,10 +163,10 @@ export function Tour({ id, steps }: { id: string; steps: TourStep[] }) {
   } else {
     const h = cardH || 260;
     const below = vh - spot.bottom - 28;
-    const above = spot.top - 76;
+    const above = spot.top - hh - 19;
     const rightRoom = vw - spot.right - 16;
     const leftRoom = spot.left - 16;
-    const besideTop = Math.min(Math.max(spot.top, 76), vh - h - 16);
+    const besideTop = Math.min(Math.max(spot.top, hh + 19), vh - h - 16);
     let top: number;
     let left = Math.min(Math.max(spot.left, 16), vw - width - 16);
     if (below >= h) top = spot.bottom + 12;

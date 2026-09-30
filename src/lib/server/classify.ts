@@ -76,9 +76,14 @@ export async function classifyFeedback(
         THEMES.includes(r.theme) &&
         STAKEHOLDERS.includes(r.stakeholder) &&
         ZONES.includes(r.zone) &&
-        SENTIMENTS.includes(r.sentiment)
+        SENTIMENTS.includes(r.sentiment) &&
+        typeof r.concern === "string" &&
+        typeof r.suggestedIssue === "string"
       ) {
-        return { result: r, by: "gemini" };
+        return {
+          result: { theme: r.theme, stakeholder: r.stakeholder, zone: r.zone, sentiment: r.sentiment, concern: r.concern, suggestedIssue: r.suggestedIssue },
+          by: "gemini",
+        };
       }
     } catch (err) {
       console.warn("[classify] Gemini failed, using rules", (err as Error).message);

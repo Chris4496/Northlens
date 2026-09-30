@@ -3,19 +3,19 @@ import type { Chunk, Feedback, FeedbackTheme, PlanStatus, Stakeholder, ZoneId } 
 
 /** Plan passages that each feedback theme is about — used to show whether the plan can still change. */
 export const THEME_PLAN_ITEMS: Record<FeedbackTheme, string[]> = {
-  accessible_transport: ["odp-footbridges", "odp-pedestrian-env", "odp-500m", "ktu-location"],
-  public_transport: ["ktu-erl-station", "nol-journey-time", "nol-phasing", "roads"],
-  healthcare: ["hospital-superseded", "ndh-expansion", "odp-area28"],
-  elderly_services: ["mwsc-detail", "town-centre-elderly"],
-  childcare_education: ["schools", "area19-facilities"],
-  green_space: ["lvnp", "lvnp-access", "recreation"],
-  noise_environment: ["noise"],
-  affordability_housing: ["population-odp", "scale-cedd"],
-  employment: ["recreation"],
-  other: [],
+  accessible_transport: ["odp-footbridges", "works-fanling-highway", "odp-pedestrian-env", "odp-500m", "ktu-location"],
+  public_transport: ["ktu-erl-station", "kwu-chun-intake", "nol-journey-time", "nol-phasing", "roads", "works-fanling-highway"],
+  healthcare: ["hospital-superseded", "ndh-expansion", "odp-area28", "ozp-hospital-2023"],
+  elderly_services: ["mwsc-detail", "town-centre-elderly", "ozp-area29-complex"],
+  childcare_education: ["ozp-schools", "ozp-area29-complex", "schools", "area19-facilities"],
+  green_space: ["lvnp", "lvnp-access", "recreation", "ozp-recreation", "ozp-riverside", "lvnp-works"],
+  noise_environment: ["noise", "works-fanling-highway", "works-first-phase"],
+  affordability_housing: ["kwu-chun-intake", "kwu-chun-estate", "housing-12000", "ozp-population", "ozp-rezoning", "scale-cedd", "population-odp"],
+  employment: ["ozp-rezoning", "urban-rural", "joint-user-complex", "recreation"],
+  other: ["kwu-chun-intake", "joint-user-complex", "urban-rural", "ozp-objections"],
 };
 
-const OPEN_STATUSES: PlanStatus[] = ["proposed", "under_review"];
+export const OPEN_STATUSES: PlanStatus[] = ["proposed", "under_review"];
 export const VULNERABLE: Stakeholder[] = ["elderly_mobility", "caregiver", "family_children"];
 export const WINDOW_DAYS = 14;
 const WEEKS = 6;

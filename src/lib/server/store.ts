@@ -1,6 +1,7 @@
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 import type { Feedback, FeedbackStructured } from "@/lib/types";
 import { getSupabase } from "./clients";
 import { buildSeed } from "./seed";
@@ -12,8 +13,12 @@ let lock: Promise<unknown> = Promise.resolve();
 
 async function readLocal(): Promise<Feedback[]> {
   try {
-    return JSON.parse(await fs.readFile(FILE, "utf8"));
-  } catch {
+    const rows: unknown = JSON.parse(await fs.readFile(FILE, "utf8"));
+    if (!Array.isArray(rows)) throw new Error("Feedback file must contain an array");
+    return rows;
+  } catch (error) {
+    // Only initialise a missing file. Never replace unreadable or corrupt data.
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     const seed = buildSeed();
     await writeLocal(seed);
     return seed;
@@ -22,7 +27,13 @@ async function readLocal(): Promise<Feedback[]> {
 
 async function writeLocal(rows: Feedback[]) {
   await fs.mkdir(path.dirname(FILE), { recursive: true });
-  await fs.writeFile(FILE, JSON.stringify(rows, null, 2));
+  const temporary = `${FILE}.${randomUUID()}.tmp`;
+  try {
+    await fs.writeFile(temporary, JSON.stringify(rows, null, 2));
+    await fs.rename(temporary, FILE);
+  } finally {
+    await fs.rm(temporary, { force: true });
+  }
 }
 
 function withLock<T>(fn: () => Promise<T>): Promise<T> {

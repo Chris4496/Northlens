@@ -66,8 +66,8 @@ export const DASHBOARD_TOUR: TourStep[] = [
       { en: "Statistics are calculated directly from the responses", zh: "統計數字直接由回應計算" },
       { en: "AI is used only to sort feedback and draft an optional briefing", zh: "AI 只用於分類意見及按需要草擬簡報" },
       {
-        en: "Demo responses are clearly marked. Switch to “Live only” to hide them",
-        zh: "示範數據已清楚標示，可切換「只看實時」隱藏",
+        en: "Confirm responses, then export a consultation report or a feedback CSV. Only confirmed rows are included.",
+        zh: "確認回應後，可匯出諮詢報告或意見 CSV。只包括已確認的列。",
       },
     ],
   },
@@ -117,6 +117,14 @@ export const DASHBOARD_TOUR: TourStep[] = [
     body: {
       en: "The AI suggests a category for each response. Confirm it or correct it here. The original words are always kept.",
       zh: "AI 為每份回應建議分類，你可在此確認或修正，原文會一直保留。",
+    },
+  },
+  {
+    target: "export",
+    title: { en: "7 · Export what you have confirmed", zh: "7 · 匯出已確認的內容" },
+    body: {
+      en: "The consultation report is a briefing you can print or save as a PDF. The feedback report is the full list, with a CSV for spreadsheets. Both use only responses a person has confirmed.",
+      zh: "諮詢報告是可供列印或另存 PDF 的簡報。意見報告是完整列表，並可下載 CSV。兩者都只使用已由人確認的回應。",
     },
   },
 ];

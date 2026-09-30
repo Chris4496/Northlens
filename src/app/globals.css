@@ -47,6 +47,16 @@ html[lang="zh-HK"] {
   --font-display: var(--nf-display-tc), serif;
 }
 
+/* Fallback until SiteHeader measures itself. */
+:root {
+  --header-h: 95px;
+}
+@media (min-width: 48rem) {
+  :root {
+    --header-h: 57px;
+  }
+}
+
 body {
   background-color: var(--color-paper);
   color: var(--color-ink);
@@ -115,4 +125,125 @@ body::before {
     transparent 1px,
     transparent 6px
   );
+}
+
+/*
+ * Safari snapshots compositor layers as the print preview opens, before @media print
+ * is applied. backdrop-filter on the sticky header, and the fixed grain overlay
+ * (mix-blend-mode + feTurbulence), crash that snapshot and take down every tab
+ * in the site process. html.printing is added and flushed before window.print();
+ * the media query covers File → Print / ⌘P.
+ */
+html.printing,
+html.printing *,
+html.printing *::before,
+html.printing *::after {
+  /* `backdrop-filter: none` is dropped by the CSS optimizer. Resetting Tailwind's
+     variable is what actually removes the header blur before Safari snapshots. */
+  --tw-backdrop-blur: initial !important;
+  mix-blend-mode: normal !important;
+  animation: none !important;
+  transition: none !important;
+}
+html.printing body {
+  min-height: 0 !important;
+  height: auto !important;
+  background: white !important;
+  background-image: none !important;
+}
+html.printing body::before {
+  content: none !important;
+  display: none !important;
+  position: static !important;
+}
+html.printing header,
+html.printing footer,
+html.printing [data-export-chrome],
+html.printing nextjs-portal {
+  display: none !important;
+  position: static !important;
+}
+
+@media print {
+  @page {
+    margin: 14mm 12mm;
+  }
+  *,
+  *::before,
+  *::after {
+    --tw-backdrop-blur: initial !important;
+    mix-blend-mode: normal !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  body {
+    min-height: 0 !important;
+    height: auto !important;
+    background: white;
+    background-image: none;
+  }
+  body::before {
+    content: none !important;
+  }
+  body::before,
+  header,
+  footer,
+  [data-export-chrome],
+  nextjs-portal {
+    display: none !important;
+    position: static !important;
+  }
+  .report-doc {
+    padding-bottom: 0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .report-doc article {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* The feedback table is seven columns. Portrait clips the right-hand ones
+     because the on-screen table is at least 960px inside a horizontal scroller. */
+  .report-feedback {
+    page: feedback-report;
+  }
+  .report-feedback .report-table {
+    overflow: visible;
+  }
+  .report-feedback table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+    font-size: 10px;
+  }
+  .report-feedback col:nth-child(1) { width: 13%; }
+  .report-feedback col:nth-child(2) { width: 24%; }
+  .report-feedback col:nth-child(3) { width: 12%; }
+  .report-feedback col:nth-child(4) { width: 13%; }
+  .report-feedback col:nth-child(5) { width: 13%; }
+  .report-feedback col:nth-child(6) { width: 9%; }
+  .report-feedback col:nth-child(7) { width: 16%; }
+  .report-feedback th,
+  .report-feedback td {
+    max-width: none;
+    white-space: normal;
+    overflow-wrap: break-word;
+    padding: 3px 5px;
+    letter-spacing: 0;
+  }
+  .report-feedback thead {
+    display: table-header-group;
+  }
+  .report-feedback tr {
+    break-inside: avoid;
+  }
+  a[href]::after {
+    content: none !important;
+  }
+}
+
+@page feedback-report {
+  size: A4 landscape;
+  margin: 10mm 8mm;
 }

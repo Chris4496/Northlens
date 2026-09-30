@@ -107,6 +107,62 @@ export const SOURCES: Source[] = [
     url: "https://www.tpb.gov.hk/en/uploads/TPB/general/9128_MainPaper.pdf",
     date: "study stage",
   },
+  {
+    id: "legco-sktn4",
+    title: "Legislative Council Brief – Approved Kwu Tung North Outline Zoning Plan No. S/KTN/4 (with Notes and Explanatory Statement)",
+    publisher: "Legislative Council Brief (Town Planning Ordinance)",
+    url: "https://www.legco.gov.hk/yr2023/english/brief/sktn4_20230929-e.pdf",
+    date: "2023-09-29",
+  },
+  {
+    id: "isd-ozp-approved",
+    title: "Draft Kwu Tung North Outline Zoning Plan approved",
+    publisher: "HKSAR Government press release",
+    url: "https://www.info.gov.hk/gia/general/202309/29/P2023092900272.htm",
+    date: "2023-09-29",
+  },
+  {
+    id: "cedd-works",
+    title: "Kwu Tung North and Fanling North NDA – Works Progress",
+    publisher: "Civil Engineering and Development Department",
+    url: "https://ktnfln-nda.hk/eng/works_progress",
+    date: "2026",
+  },
+  {
+    id: "cedd-first-stage",
+    title: "Major Projects – First Stage of Site Formation and Engineering Infrastructure at KTN and FLN NDA",
+    publisher: "Civil Engineering and Development Department",
+    url: "https://www.cedd.gov.hk/eng/our-projects/major-projects/index-id-37.html",
+    date: "2026",
+  },
+  {
+    id: "ndc-kwu-chun",
+    title: "古洞北第19區用地公共租住屋邨及樓宇命名 (Naming of the public rental housing estate at Kwu Tung North Area 19)",
+    publisher: "Housing Department paper to North District Council",
+    url: "https://www.districtcouncils.gov.hk/north/doc/2024_2027/tc/dc_meetings_doc/28756/n_2025_025_ch.pdf",
+    date: "2025",
+  },
+  {
+    id: "ha-dimensions-2608",
+    title: "Housing Dimensions (14 August 2026)",
+    publisher: "Hong Kong Housing Authority",
+    url: "https://www.housingauthority.gov.hk/en/common/pdf/about-us/publications-and-statistics/housing-dimensions/14Aug2026.pdf",
+    date: "2026-08-14",
+  },
+  {
+    id: "legco-visit-2609",
+    title: "LegCo Members visit Kwu Tung North New Development Area in Northern Metropolis",
+    publisher: "HKSAR Government press release (LegCo Secretariat)",
+    url: "https://www.info.gov.hk/gia/general/202609/10/P2026091000818.htm",
+    date: "2026-09-10",
+  },
+  {
+    id: "sdev-remarks-2609",
+    title: "發展局局長與立法會議員考察北部都會區後會見傳媒開場發言 (Secretary for Development's opening remarks, Chinese only)",
+    publisher: "HKSAR Government press release",
+    url: "https://www.info.gov.hk/gia/general/202609/10/P2026091000709.htm",
+    date: "2026-09-10",
+  },
 ];
 
 export const SOURCE_BY_ID = new Map(SOURCES.map((s) => [s.id, s]));
