@@ -33,7 +33,9 @@ export function Heatmap({
                 <th key={s} className="h-28 w-12 pb-1 align-bottom font-normal">
                   <span
                     title={pick(STAKEHOLDER_LABEL[s])}
-                    className="mx-auto block max-h-28 rotate-180 overflow-hidden text-ellipsis whitespace-nowrap text-left text-[10px] text-ink-soft [writing-mode:vertical-rl]">
+                    className={`mx-auto block max-h-28 overflow-hidden text-ellipsis whitespace-nowrap text-left text-ink-soft [writing-mode:vertical-rl] ${
+                      zh ? "text-[11px] tracking-[0.1em]" : "rotate-180 text-[10px]"
+                    }`}>
                     {pick(STAKEHOLDER_LABEL[s])}
                   </span>
                 </th>
